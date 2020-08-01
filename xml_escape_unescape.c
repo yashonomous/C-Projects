@@ -62,7 +62,7 @@ void copyStringToString(char* dest, char* src, int dest_size){
 int inHashTable(char c, char* value){
     for(int i=0; i<SIZE_HASHTABLE; i++){
         if(hash_table[i].key == c){
-            //value = hash_table[i].value;      //wont work
+            //value = hash_table[i].value;      //wont work. because it will try to change the address.
             copyStringToString(value, hash_table[i].value, MAX_VALUE_SIZE);
             return 1; 
         }
@@ -139,7 +139,7 @@ int main()
     char* input = malloc((MAX_INPUT_SIZE+1) * sizeof(char));
     memset(input, 0, MAX_INPUT_SIZE+1);
     //scanf("%s", input);
-    // input = "h&llo";
+    // input = "h&llo";         //not a good way 
     copyStringToString(input, "<script>yash's</script>", MAX_INPUT_SIZE);
     char* output = malloc((MAX_OUTPUT_SIZE+1) * sizeof(char));
     memset(output, 0, MAX_OUTPUT_SIZE+1);
@@ -157,6 +157,7 @@ int main()
     //free malloc
     free(input);
     free(output);
-    
+    free(output1);
+
     return 0;
 }
