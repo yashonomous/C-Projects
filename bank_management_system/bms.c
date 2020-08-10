@@ -73,7 +73,7 @@ typedef struct menu
     int_fun_ptr viewCustomerDetails;
     int_fun_ptr edit;
     int_fun_ptr transact;
-    int_fun_ptr erase;
+    int_fun_ptr eraseRecord;
     int_fun_ptr see;
 }menu_t;
 
@@ -271,6 +271,7 @@ char* hexToAscii(char* hex_str, int size){
     return ascii;
 }
 
+#if 0
 customer_details_t* prepareCustomerDetailsStruct(){
     customer_details_t* temp_customer_ptr = malloc(sizeof(customer_details_t));
     if(temp_customer_ptr == NULL){
@@ -285,10 +286,16 @@ customer_details_t* prepareCustomerDetailsStruct(){
     temp_customer_ptr->next_customer_details = NULL;
     return temp_customer_ptr;
 }
+#endif
 
 int _createNewAccount(){
-    customer_details_t* customer_details_ptr = prepareCustomerDetailsStruct();
-    if(customer_details_ptr == NULL){
+    customer_details_t customer_details_ptr;
+    memset(&customer_details_ptr, 0, sizeof(customer_details_t));
+    customer_details_ptr.address = malloc(sizeof(address_details_t));
+    customer_details_ptr.phone_no = malloc(sizeof(phone_number_t));
+    memset(customer_details_ptr.address, 0, sizeof(address_details_t));
+    memset(customer_details_ptr.phone_no, 0, sizeof(phone_number_t));
+    if((customer_details_ptr.address==NULL) || (customer_details_ptr.phone_no==NULL)){
         fprintf(stderr, "%s -> %s\n", __func__, "Failed to allocate memory to customer_details_ptr");
         // exit(0);
         return -1;
@@ -315,8 +322,8 @@ int _createNewAccount(){
         system("cls");
         acc_no:
         fprintf(stdout, "%s", "Enter account number -> ");
-        fgets(customer_details_ptr->account_number, MAX_ACCOUNT_NO_LEN, stdin);
-        if(sscanf(customer_details_ptr->account_number, "%s", customer_details_ptr->account_number) != 1){
+        fgets(customer_details_ptr.account_number, MAX_ACCOUNT_NO_LEN, stdin);
+        if(sscanf(customer_details_ptr.account_number, "%s", customer_details_ptr.account_number) != 1){
             fprintf(stderr, "%s\n", "Wrong account number format");
             // exit(0);
             //return -1;
@@ -331,16 +338,16 @@ int _createNewAccount(){
             check_customer_details_ptr.address->pin_code, check_customer_details_ptr.phone_no->country_code,
             check_customer_details_ptr.phone_no->ph_no, check_customer_details_ptr.deposit_date, check_customer_details_ptr.withdraw_date) 
             != EOF){
-                if(strncmp(customer_details_ptr->account_number, check_customer_details_ptr.account_number, 
-                    strlen(customer_details_ptr->account_number)) == 0){
+                if(strncmp(customer_details_ptr.account_number, check_customer_details_ptr.account_number, 
+                    strlen(customer_details_ptr.account_number)) == 0){
                         fprintf(stderr, "%s\n", "Account already exists. Try different account number");
                         goto acc_no;
                 }
         }
         acc_type:
         fprintf(stdout, "%s", "Enter account type -> ");
-        fgets(customer_details_ptr->account_type, MAX_ACCOUNT_TYPE_LEN, stdin);
-        if(sscanf(customer_details_ptr->account_type, "%s", customer_details_ptr->account_type) != 1){
+        fgets(customer_details_ptr.account_type, MAX_ACCOUNT_TYPE_LEN, stdin);
+        if(sscanf(customer_details_ptr.account_type, "%s", customer_details_ptr.account_type) != 1){
             fprintf(stderr, "%s\n", "Wrong account type format");
             // exit(0);
             // return -1;
@@ -348,17 +355,17 @@ int _createNewAccount(){
         }
         f_name:
         fprintf(stdout, "%s", "Enter first name -> ");
-        fgets(customer_details_ptr->first_name, MAX_FNAME_LEN, stdin);
-        if(sscanf(customer_details_ptr->first_name, "%s", customer_details_ptr->first_name) != 1){
+        fgets(customer_details_ptr.first_name, MAX_FNAME_LEN, stdin);
+        if(sscanf(customer_details_ptr.first_name, "%s", customer_details_ptr.first_name) != 1){
             fprintf(stderr, "%s\n", "Wrong fname format");
             // exit(0);
             // return -1;
             goto f_name;
         }
         l_name:
-        fprintf(stdout, "%s", "Enter last name -> ");
-        fgets(customer_details_ptr->last_name, MAX_LNAME_LEN, stdin);
-        if(sscanf(customer_details_ptr->last_name, "%s", customer_details_ptr->last_name) != 1){
+        fprintf(stdout, "%s", "Enter last name . ");
+        fgets(customer_details_ptr.last_name, MAX_LNAME_LEN, stdin);
+        if(sscanf(customer_details_ptr.last_name, "%s", customer_details_ptr.last_name) != 1){
             fprintf(stderr, "%s\n", "Wrong lname format");
             // exit(0);
             // return -1;
@@ -366,9 +373,9 @@ int _createNewAccount(){
         }
         dob:
         fprintf(stdout, "%s", "Enter date of birth(DD/MM/YYYY) -> ");
-        scanf("%s", customer_details_ptr->dob);
+        scanf("%s", customer_details_ptr.dob);
         getchar();
-        if(dateNotCorrectFormat(customer_details_ptr->dob)){
+        if(dateNotCorrectFormat(customer_details_ptr.dob)){
             fprintf(stderr, "%s\n", "Wrong date format");
             goto dob;
         }
@@ -381,8 +388,8 @@ int _createNewAccount(){
 
         email_id:
         fprintf(stdout, "%s", "Enter email id -> ");
-        fgets(customer_details_ptr->email_id, MAX_EMAIL_LEN, stdin);
-        if(sscanf(customer_details_ptr->email_id, "%s", customer_details_ptr->email_id) != 1){
+        fgets(customer_details_ptr.email_id, MAX_EMAIL_LEN, stdin);
+        if(sscanf(customer_details_ptr.email_id, "%s", customer_details_ptr.email_id) != 1){
             fprintf(stderr, "%s\n", "Wrong email id format");
             // exit(0);
             // return -1;
@@ -391,8 +398,8 @@ int _createNewAccount(){
 
         aadhar_no:
         fprintf(stdout, "%s", "Enter aadhar card number -> ");
-        fgets(customer_details_ptr->aadhar_no, MAX_AADHAR_LEN, stdin);
-        if(sscanf(customer_details_ptr->aadhar_no, "%s", customer_details_ptr->aadhar_no) != 1){
+        fgets(customer_details_ptr.aadhar_no, MAX_AADHAR_LEN, stdin);
+        if(sscanf(customer_details_ptr.aadhar_no, "%s", customer_details_ptr.aadhar_no) != 1){
             fprintf(stderr, "%s\n", "Wrong aadhar_number format");
             // exit(0);
             // return -1;
@@ -402,8 +409,8 @@ int _createNewAccount(){
         fprintf(stdout, "%s", "Enter address details : \n");
         apt_no:
         fprintf(stdout, "%s", "Enter apartment number -> ");
-        fgets(customer_details_ptr->address->apartment_no, MAX_APARTMENT_NO_LEN, stdin);
-        if(sscanf(customer_details_ptr->address->apartment_no, "%s", customer_details_ptr->address->apartment_no) != 1){
+        fgets(customer_details_ptr.address->apartment_no, MAX_APARTMENT_NO_LEN, stdin);
+        if(sscanf(customer_details_ptr.address->apartment_no, "%s", customer_details_ptr.address->apartment_no) != 1){
             fprintf(stderr, "%s\n", "Wrong apartment number format");
             // exit(0);
             // return -1;
@@ -411,8 +418,8 @@ int _createNewAccount(){
         }
         building_name:
         fprintf(stdout, "%s", "Enter building name -> ");
-        fgets(customer_details_ptr->address->building, MAX_BUILDING_LEN, stdin);
-        if(sscanf(customer_details_ptr->address->building, "%[^\n]s", customer_details_ptr->address->building) != 1){
+        fgets(customer_details_ptr.address->building, MAX_BUILDING_LEN, stdin);
+        if(sscanf(customer_details_ptr.address->building, "%[^\n]s", customer_details_ptr.address->building) != 1){
             fprintf(stderr, "%s\n", "Wrong building name format");
             // exit(0);
             // return -1;
@@ -420,8 +427,8 @@ int _createNewAccount(){
         }
         colony_name:
         fprintf(stdout, "%s", "Enter colony name -> ");
-        fgets(customer_details_ptr->address->colony, MAX_COLONY_LEN, stdin);
-        if(sscanf(customer_details_ptr->address->colony, "%[^\n]s", customer_details_ptr->address->colony) != 1){
+        fgets(customer_details_ptr.address->colony, MAX_COLONY_LEN, stdin);
+        if(sscanf(customer_details_ptr.address->colony, "%[^\n]s", customer_details_ptr.address->colony) != 1){
             fprintf(stderr, "%s\n", "Wrong colony name format");
             // exit(0);
             // return -1;
@@ -429,8 +436,8 @@ int _createNewAccount(){
         }
         city_name:
         fprintf(stdout, "%s", "Enter city name -> ");
-        fgets(customer_details_ptr->address->city, MAX_CITY_LEN, stdin);
-        if(sscanf(customer_details_ptr->address->city, "%[^\n]s", customer_details_ptr->address->city) != 1){
+        fgets(customer_details_ptr.address->city, MAX_CITY_LEN, stdin);
+        if(sscanf(customer_details_ptr.address->city, "%[^\n]s", customer_details_ptr.address->city) != 1){
             fprintf(stderr, "%s\n", "Wrong city name format");
             // exit(0);
             // return -1;
@@ -438,8 +445,8 @@ int _createNewAccount(){
         }
         state_name:
         fprintf(stdout, "%s", "Enter state name -> ");
-        fgets(customer_details_ptr->address->state, MAX_STATE_LEN, stdin);
-        if(sscanf(customer_details_ptr->address->state, "%[^\n]s", customer_details_ptr->address->state) != 1){
+        fgets(customer_details_ptr.address->state, MAX_STATE_LEN, stdin);
+        if(sscanf(customer_details_ptr.address->state, "%[^\n]s", customer_details_ptr.address->state) != 1){
             fprintf(stderr, "%s\n", "Wrong state name format");
             // exit(0);
             // return -1;
@@ -447,8 +454,8 @@ int _createNewAccount(){
         }
         country_name:
         fprintf(stdout, "%s", "Enter country name -> ");
-        fgets(customer_details_ptr->address->country, MAX_COUNTRY_LEN, stdin);
-        if(sscanf(customer_details_ptr->address->country, "%[^\n]s", customer_details_ptr->address->country) != 1){
+        fgets(customer_details_ptr.address->country, MAX_COUNTRY_LEN, stdin);
+        if(sscanf(customer_details_ptr.address->country, "%[^\n]s", customer_details_ptr.address->country) != 1){
             fprintf(stderr, "%s\n", "Wrong country name format");
             // exit(0);
             // return -1;
@@ -456,8 +463,8 @@ int _createNewAccount(){
         }
         pincode:
         fprintf(stdout, "%s", "Enter pincode -> ");
-        fgets(customer_details_ptr->address->pin_code, MAX_PINCODE_LEN, stdin);
-        if(sscanf(customer_details_ptr->address->pin_code, "%s", customer_details_ptr->address->pin_code) != 1){
+        fgets(customer_details_ptr.address->pin_code, MAX_PINCODE_LEN, stdin);
+        if(sscanf(customer_details_ptr.address->pin_code, "%s", customer_details_ptr.address->pin_code) != 1){
             fprintf(stderr, "%s\n", "Wrong pincode format");
             // exit(0);
             // return -1;
@@ -467,8 +474,8 @@ int _createNewAccount(){
         fprintf(stdout, "%s", "Enter phone number details : \n");
         country_code:
         fprintf(stdout, "%s", "Enter country code -> ");
-        fgets(customer_details_ptr->phone_no->country_code, MAX_COUNTRY_CODE_LEN, stdin);
-        if(sscanf(customer_details_ptr->phone_no->country_code, "%s", customer_details_ptr->phone_no->country_code) != 1){
+        fgets(customer_details_ptr.phone_no->country_code, MAX_COUNTRY_CODE_LEN, stdin);
+        if(sscanf(customer_details_ptr.phone_no->country_code, "%s", customer_details_ptr.phone_no->country_code) != 1){
             fprintf(stderr, "%s\n", "Wrong country code format");
             // exit(0);
             // return -1;
@@ -476,8 +483,8 @@ int _createNewAccount(){
         }
         phone_no:
         fprintf(stdout, "%s", "Enter phone number -> ");
-        fgets(customer_details_ptr->phone_no->ph_no, MAX_PH_NO_LEN, stdin);
-        if(sscanf(customer_details_ptr->phone_no->ph_no, "%s", customer_details_ptr->phone_no->ph_no) != 1){
+        fgets(customer_details_ptr.phone_no->ph_no, MAX_PH_NO_LEN, stdin);
+        if(sscanf(customer_details_ptr.phone_no->ph_no, "%s", customer_details_ptr.phone_no->ph_no) != 1){
             fprintf(stderr, "%s\n", "Wrong phone number format");
             // exit(0);
             // return -1;
@@ -485,47 +492,47 @@ int _createNewAccount(){
         }
 
         fprintf(stdout, "%s", "Enter amount -> Rs.");
-        scanf("%lf", &customer_details_ptr->amount);
+        scanf("%lf", &customer_details_ptr.amount);
         getchar();
 
         deposit_date:
         fprintf(stdout, "%s", "Enter deposit date(DD/MM/YYYY) -> ");
-        scanf("%s", customer_details_ptr->deposit_date);
+        scanf("%s", customer_details_ptr.deposit_date);
         getchar();
-        if(dateNotCorrectFormat(customer_details_ptr->deposit_date)){
+        if(dateNotCorrectFormat(customer_details_ptr.deposit_date)){
             fprintf(stderr, "%s\n", "Wrong date format");
             goto deposit_date;
         }
         withdraw_date:
         fprintf(stdout, "%s", "Enter withdraw date(DD/MM/YYYY) -> ");
-        scanf("%s", customer_details_ptr->withdraw_date);
+        scanf("%s", customer_details_ptr.withdraw_date);
         getchar();
-        if(dateNotCorrectFormat(customer_details_ptr->withdraw_date)){
+        if(dateNotCorrectFormat(customer_details_ptr.withdraw_date)){
             fprintf(stderr, "%s\n", "Wrong date format");
             goto withdraw_date;
         }
 
         char record[1024];
-        sprintf(record, "%s %s %s %s ", customer_details_ptr->account_number, customer_details_ptr->account_type, 
-                customer_details_ptr->first_name, customer_details_ptr->last_name);
-        sprintf(record+strlen(record), "%s %s %s ", customer_details_ptr->dob, customer_details_ptr->aadhar_no, customer_details_ptr->email_id);
-        sprintf(record+strlen(record), "%s,%s,%s,%s,%s,%s.%s ", customer_details_ptr->address->apartment_no,
-                customer_details_ptr->address->building, customer_details_ptr->address->colony,
-                customer_details_ptr->address->city, customer_details_ptr->address->state,
-                customer_details_ptr->address->country, customer_details_ptr->address->pin_code);
-        sprintf(record+strlen(record), "%s-%s ", customer_details_ptr->phone_no->country_code, customer_details_ptr->phone_no->ph_no);
-        sprintf(record+strlen(record), "%lf %s %s\n", customer_details_ptr->amount, 
-                customer_details_ptr->deposit_date, customer_details_ptr->withdraw_date);
+        sprintf(record, "%s %s %s %s ", customer_details_ptr.account_number, customer_details_ptr.account_type, 
+                customer_details_ptr.first_name, customer_details_ptr.last_name);
+        sprintf(record+strlen(record), "%s %s %s ", customer_details_ptr.dob, customer_details_ptr.aadhar_no, customer_details_ptr.email_id);
+        sprintf(record+strlen(record), "%s,%s,%s,%s,%s,%s.%s ", customer_details_ptr.address->apartment_no,
+                customer_details_ptr.address->building, customer_details_ptr.address->colony,
+                customer_details_ptr.address->city, customer_details_ptr.address->state,
+                customer_details_ptr.address->country, customer_details_ptr.address->pin_code);
+        sprintf(record+strlen(record), "%s-%s ", customer_details_ptr.phone_no->country_code, customer_details_ptr.phone_no->ph_no);
+        sprintf(record+strlen(record), "%lf %s %s\n", customer_details_ptr.amount, 
+                customer_details_ptr.deposit_date, customer_details_ptr.withdraw_date);
         fprintf(stdout, "%s\n", record);
         // fprintf(fd, "%s\t%s\t%s\t\t%s\t\t\t\t\t\t\t%s\t\t\t\t\t\t\t\t\t\t\t%s\n", "fname",
         //         "lname", "dob", "aadhar_no", "address", "ph_no");
         fprintf(fd, "%s", record);
         fclose(fd);
         fclose(fd1);
-        if(temp_customer_details_ptr.address)
-            free(temp_customer_details_ptr.address);
-        if(temp_customer_details_ptr.phone_no)
-            free(temp_customer_details_ptr.phone_no);
+        if(customer_details_ptr.address)
+            free(customer_details_ptr.address);
+        if(customer_details_ptr.phone_no)
+            free(customer_details_ptr.phone_no);
         check_customer_details_ptr.address = NULL;      //good practice to make them null to avoid unwanted access
         check_customer_details_ptr.phone_no = NULL;
         fprintf(stdout, "%s\n", "Account created successfully.");
@@ -560,7 +567,6 @@ int _edit(){
         return -1;
     }
     customer_details_t temp_customer_details_ptr;
-    temp_customer_details_ptr.address = malloc(sizeof(address_details_t));
     temp_customer_details_ptr.address = malloc(sizeof(address_details_t));
     memset(temp_customer_details_ptr.address, 0, sizeof(address_details_t));
     temp_customer_details_ptr.phone_no = malloc(sizeof(phone_number_t));
@@ -817,7 +823,6 @@ int _transact(void){
     }
     customer_details_t temp_customer_details_ptr;
     temp_customer_details_ptr.address = malloc(sizeof(address_details_t));
-    temp_customer_details_ptr.address = malloc(sizeof(address_details_t));
     memset(temp_customer_details_ptr.address, 0, sizeof(address_details_t));
     temp_customer_details_ptr.phone_no = malloc(sizeof(phone_number_t));
     memset(temp_customer_details_ptr.phone_no, 0, sizeof(phone_number_t));
@@ -879,7 +884,7 @@ int _transact(void){
                 sprintf(record+strlen(record), "%s-%s ", temp_customer_details_ptr.phone_no->country_code, temp_customer_details_ptr.phone_no->ph_no);
                 sprintf(record+strlen(record), "%lf %s %s\n", temp_customer_details_ptr.amount, 
                             temp_customer_details_ptr.deposit_date, temp_customer_details_ptr.withdraw_date);
-                fprintf(stdout, "%s\n", record);
+                //fprintf(stdout, "%s\n", record);
                 // fprintf(fd, "%s\t%s\t%s\t\t%s\t\t\t\t\t\t\t%s\t\t\t\t\t\t\t\t\t\t\t%s\n", "fname",
                 //         "lname", "dob", "aadhar_no", "address", "ph_no");
                 fprintf(update_fd, "%s", record);
@@ -889,7 +894,7 @@ int _transact(void){
                 fprintf(stderr, "\n%s -> %s\n\n", __func__, "no record found."\
                         "Please add account details");
                 int menu_exit_choice;
-                menu_exit_choice:
+                // menu_exit_choice:
                 fprintf(stdout, "%s\n", "Enter 1 to go to main menu or 0 to exit");
                 scanf("%d", &menu_exit_choice);
                 if(menu_exit_choice == exit_program){
@@ -917,6 +922,111 @@ int _transact(void){
             remove("customers.txt");
             rename("temporary_file.txt", "customers.txt");
             
+            fprintf(stdout, "\n%s\n", "Transaction successful");
+            menu_exit_choice:
+            fprintf(stdout, "\n%s\n", "Enter 1 to go to main menu or 0 to logout");
+            scanf("%d", &menu_exit_choice);
+            if(menu_exit_choice == exit_program){
+                close_program();
+            }
+            else if(menu_exit_choice == main_menu){
+                system("cls");
+                menu();
+            }
+            else{
+                fprintf(stderr, "%s -> %s\n", __func__, "Please enter a correct choice");
+                goto menu_exit_choice;
+            }
+            return 1;
+}
+
+int _eraseRecord(void){
+    FILE *fd, *update_fd;
+    int found = 0, count = 1, menu_exit_choice;
+    double amount;
+    char record[1024];
+    fd = fopen("customers.txt", "r");
+    update_fd = fopen("temporary_file.txt", "w");
+    if((fd==NULL || (update_fd==NULL))){
+        fprintf(stderr, "%s %s\n", __func__, "Cannot open file");
+        return -1;
+    }
+    customer_details_t temp_customer_details_ptr;
+    temp_customer_details_ptr.address = malloc(sizeof(address_details_t));
+    memset(temp_customer_details_ptr.address, 0, sizeof(address_details_t));
+    temp_customer_details_ptr.phone_no = malloc(sizeof(phone_number_t));
+    memset(temp_customer_details_ptr.phone_no, 0, sizeof(phone_number_t));
+    if((temp_customer_details_ptr.address==NULL) || (temp_customer_details_ptr.phone_no==NULL)){
+        fprintf(stderr, "%s\n", "Failed to allocate memory to address struct or ph_no struct");
+        return -1;
+    }
+    while(fscanf(fd, "%s %s %s %s %s %s %s %[^,],%[^,],%[^,],%[^,],%[^,],%[^.].%s %[^-]-%s %lf %s %s", temp_customer_details_ptr.account_number,
+            temp_customer_details_ptr.account_type, temp_customer_details_ptr.first_name, temp_customer_details_ptr.last_name,
+            temp_customer_details_ptr.dob, temp_customer_details_ptr.aadhar_no, temp_customer_details_ptr.email_id, 
+            temp_customer_details_ptr.address->apartment_no, temp_customer_details_ptr.address->building,
+            temp_customer_details_ptr.address->colony, temp_customer_details_ptr.address->city,
+            temp_customer_details_ptr.address->state, temp_customer_details_ptr.address->country,
+            temp_customer_details_ptr.address->pin_code, temp_customer_details_ptr.phone_no->country_code,
+            temp_customer_details_ptr.phone_no->ph_no, &temp_customer_details_ptr.amount,
+            temp_customer_details_ptr.deposit_date, temp_customer_details_ptr.withdraw_date) 
+            != EOF)
+            {
+                if(strncmp(temp_customer_details_ptr.email_id, logged_in_user_email, strlen(logged_in_user_email)) == 0){
+                    found = 1;
+                    continue;
+                }
+                else{
+                    memset(record, 0, sizeof(record));
+                    sprintf(record, "%s %s %s %s ", temp_customer_details_ptr.account_number, temp_customer_details_ptr.account_type, 
+                                temp_customer_details_ptr.first_name, temp_customer_details_ptr.last_name);
+                    sprintf(record+strlen(record), "%s %s %s ", temp_customer_details_ptr.dob, temp_customer_details_ptr.aadhar_no, temp_customer_details_ptr.email_id);
+                    sprintf(record+strlen(record), "%s,%s,%s,%s,%s,%s.%s ", temp_customer_details_ptr.address->apartment_no,
+                                temp_customer_details_ptr.address->building, temp_customer_details_ptr.address->colony,
+                                temp_customer_details_ptr.address->city, temp_customer_details_ptr.address->state,
+                                temp_customer_details_ptr.address->country, temp_customer_details_ptr.address->pin_code);
+                    sprintf(record+strlen(record), "%s-%s ", temp_customer_details_ptr.phone_no->country_code, temp_customer_details_ptr.phone_no->ph_no);
+                    sprintf(record+strlen(record), "%lf %s %s\n", temp_customer_details_ptr.amount, 
+                                temp_customer_details_ptr.deposit_date, temp_customer_details_ptr.withdraw_date);
+                   // fprintf(stdout, "%s\n", record);
+                    // fprintf(fd, "%s\t%s\t%s\t\t%s\t\t\t\t\t\t\t%s\t\t\t\t\t\t\t\t\t\t\t%s\n", "fname",
+                    //         "lname", "dob", "aadhar_no", "address", "ph_no");
+                    fprintf(update_fd, "%s", record);
+                }
+            }
+            if(found == 0){
+                fprintf(stderr, "\n%s -> %s\n\n", __func__, "no record found."\
+                        "Please add account details");
+                int menu_exit_choice;
+                //menu_exit_choice:
+                fprintf(stdout, "%s\n", "Enter 1 to go to main menu or 0 to exit");
+                scanf("%d", &menu_exit_choice);
+                if(menu_exit_choice == exit_program){
+                    close_program();
+                }
+                else if(menu_exit_choice == main_menu){
+                    system("cls");
+                    menu();
+                }
+                else{
+                    fprintf(stderr, "%s -> %s\n", __func__, "Please enter a correct choice");
+                    goto menu_exit_choice;
+                }
+            }
+
+            fclose(fd);
+            fclose(update_fd);
+            if(temp_customer_details_ptr.address)
+                free(temp_customer_details_ptr.address);
+            if(temp_customer_details_ptr.phone_no)
+                free(temp_customer_details_ptr.phone_no);
+            temp_customer_details_ptr.address = NULL;
+            temp_customer_details_ptr.phone_no = NULL;
+
+            remove("customers.txt");
+            rename("temporary_file.txt", "customers.txt");
+            
+            fprintf(stdout, "\n%s\n\n", "Record deleted");
+
             menu_exit_choice:
             fprintf(stdout, "%s\n", "Enter 1 to go to main menu or 0 to logout");
             scanf("%d", &menu_exit_choice);
@@ -1186,10 +1296,17 @@ void menu(void){
         case 3:
             if(_transact() == -1){
                 error = 1;
-                fprintf(stderr, "%s -> %s\n", __func__, "Failed to edit account");
+                fprintf(stderr, "%s -> %s\n", __func__, "Failed to transact account");
                 break;
             }
-            break;      
+            break; 
+        case 5:
+            if(_eraseRecord() == -1){
+                error = 1;
+                fprintf(stderr, "%s -> %s\n", __func__, "Failed to erase details");
+                break;
+            }
+            break;          
         case 6:
             if(_viewCustomerDetails() == -1){
                 error = 1;
@@ -1270,6 +1387,7 @@ int register_user(void){
 void close_program(void){
     system("cls");
     fprintf(stdout, "%s\n", "-/-/-/-/-/-Thank you for using the Bank Management System-/-/-/-/-/-");
+    exit(0);        //to crash the function stack
 }
 
 int main(int argc, char const *argv[])
