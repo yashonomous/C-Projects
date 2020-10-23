@@ -10,18 +10,6 @@ Write your code in this editor and press "Run" button to compile and execute it.
 #include <stdlib.h>
 #include <time.h>
 
-#define toUpperCase(c) (((c)>='a' && (c)<='z') ? (c - 32) : (c))  
-
-#define HEX_DIGIT(c) ((toUpperCase(c) < 'A') ? ((c) - '0') : (toUpperCase(c) - 'A' + 10))
-
-#define foreach(item, array) \
-    for(int keep = 1, \
-            count = 0,\
-            size = sizeof (array) / sizeof *(array); \
-        keep && count != size; \
-        keep = !keep, count++) \
-      for(item = (array) + count; keep; keep = !keep)
-
 #define STRLEN(string) ({ \
 						int count=0; \
                         char *tmp = string; \
@@ -37,7 +25,7 @@ Write your code in this editor and press "Run" button to compile and execute it.
 										int tmp = length; \
 										while (tmp--) \
 										{ \
-											string[tmp] = '\0'; \
+										string[tmp] = '\0'; \
 										} \
 										})						
 #define MAX_IN_WORDS_LEN 30
@@ -79,21 +67,24 @@ void processDigit(int digit, char *result){
 
 void convertTime(struct tm *now_ptr, char *result){
     append(result, "It's ");
+	//process hours
     processDigit(now_ptr->tm_hour, result);
 	append(result, " ");
+	//process minutes
     processDigit(now_ptr->tm_min, result);
 }
 
 int main()
 {
-    time_t now = time(&now);
+    //get current time
+	time_t now = time(&now);
     struct tm *now_ptr = localtime(&now);
+	
     char *result = malloc(MAX_IN_WORDS_LEN * sizeof(char));
 	MEMSET(result, '\0', MAX_IN_WORDS_LEN);
-    convertTime(now_ptr, result);
+    
+	convertTime(now_ptr, result);
     printf("%s\n", result);
-    // printf("time is -> %s\n", ctime(&now));
-    // printf("%d : %d : %d\n", now_ptr->tm_hour, now_ptr->tm_min, now_ptr->tm_sec);
     
     return 0;
 }
