@@ -21,11 +21,11 @@ Write your code in this editor and press "Run" button to compile and execute it.
                         count; \
 						})
 
-#define MEMSET(string, char, length)  ({ \
+#define MEMSET(array, value, length)  ({ \
 										int tmp = length; \
 										while (tmp--) \
 										{ \
-										string[tmp] = '\0'; \
+										array[tmp] = value; \
 										} \
 										})						
 #define MAX_IN_WORDS_LEN 30
