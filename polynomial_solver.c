@@ -1,11 +1,3 @@
-/******************************************************************************
-
-                            Online C Compiler.
-                Code, Compile, Run and Debug C program online.
-Write your code in this editor and press "Run" button to compile and execute it.
-
-*******************************************************************************/
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -66,6 +58,7 @@ void _setDegree(polynomial_t *this){
 
 int main()
 {
+	//can use a pointer to struct or can also use a struct object directly
     polynomial_t *polynomialPtr = malloc(sizeof(polynomial_t));
     polynomialPtr->setDegree = _setDegree;
     polynomialPtr->getDegree = _getDegree;
