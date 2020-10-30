@@ -1,11 +1,3 @@
-/******************************************************************************
-
-                            Online C Compiler.
-                Code, Compile, Run and Debug C program online.
-Write your code in this editor and press "Run" button to compile and execute it.
-
-*******************************************************************************/
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -28,31 +20,33 @@ typedef struct polynomial{
     int _degree;
     int (*getDegree)(struct polynomial *this);
     void (*setDegree)(struct polynomial *this);
-    void (*readPolynomial)(struct polynomial *this, int *coefficients);
-    void (*solvePolynomial)(struct polynomial *this, int *coefficients, int *res);
+    void (*readPolynomial)(struct polynomial *this);    
+    void (*solvePolynomial)(struct polynomial *this, int *res);    
+    int coefficients[];
 }polynomial_t;
 
-void _readPolynomial(polynomial_t *this, int *coefficients){
+void _readPolynomial(polynomial_t *this){    
     int degree = this->getDegree(this);
+    MEMSET(this->coefficients, 0, degree+1);
     for(int i=degree; i>=0; i--){
         printf("Enter coefficient for x to the power of %d :- ", i);
-        scanf("%d", &coefficients[degree - i]);
+        scanf("%d", &(this->coefficients[degree - i]));
         getchar();
     }
 }
 
-void _solvePolynomial(polynomial_t *this, int *coefficients, int *res){
+void _solvePolynomial(polynomial_t *this, int *res){    
     int degree = this->getDegree(this);
     int x = 0;
     printf("Enter the value of x :- ");
     scanf("%d", &x);
     getchar();
     for(int i=degree; i>=0; i--){
-        *res += coefficients[degree - i] * POW(x, i);
+        // *res += coefficients[degree - i] * POW(x, i);
+        *res += this->coefficients[degree - i] * POW(x, i);
     }
 }
 
-/* static inline */
 int _getDegree(polynomial_t *this){
     return this->_degree;    
 }
@@ -61,7 +55,6 @@ void _setDegree(polynomial_t *this){
     printf("Enter the degree of polynomial :- ");
     scanf("%d", &(this->_degree));
     getchar();
-    // ptr->readPolynomial(ptr);
 }
 
 int main()
@@ -73,11 +66,10 @@ int main()
     polynomialPtr->solvePolynomial = _solvePolynomial;
     polynomialPtr->setDegree(polynomialPtr);
     int degree = polynomialPtr->getDegree(polynomialPtr);
-    int coefficients[degree];
-    MEMSET(coefficients, 0, degree);
-    polynomialPtr->readPolynomial(polynomialPtr, coefficients);
+    polynomialPtr = realloc(polynomialPtr, sizeof(*polynomialPtr)+((degree+1)*sizeof(int)));
+    polynomialPtr->readPolynomial(polynomialPtr);
     int res = 0;
-    polynomialPtr->solvePolynomial(polynomialPtr, coefficients, &res);
+    polynomialPtr->solvePolynomial(polynomialPtr, &res);    
     printf("res -> %d\n", res);
     return 0;
 }
