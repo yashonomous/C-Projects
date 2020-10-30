@@ -59,6 +59,7 @@ void _setDegree(polynomial_t *this){
 
 int main()
 {
+	//can use a pointer to struct or can also use a struct object directly
     polynomial_t *polynomialPtr = malloc(sizeof(polynomial_t));
     polynomialPtr->setDegree = _setDegree;
     polynomialPtr->getDegree = _getDegree;
