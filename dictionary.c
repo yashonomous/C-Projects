@@ -25,7 +25,7 @@ typedef unsigned int uint32;
 
 typedef struct
 {
-    int key;
+    uint32 key;
     char *value;
 } dictionary_node;
 
@@ -36,12 +36,12 @@ typedef enum
     DICT_SORTED_ON_VALUE
 } sort_type;
 
-void getValueFromKey(sort_type type, dictionary_node *dictionary, int dictionary_size, int *key, char *value);
-void getValueFromKeyUnsorted(dictionary_node *dictionary, int dictionary_size, int *key, char *value);
-void getValueFromKeySorted(dictionary_node *dictionary, int dictionary_size, int *key, char *value);
-void getKeyFromValue(sort_type type, dictionary_node *dictionary, int dictionary_size, char *value, int *key);
-void getKeyFromValueUnsorted(dictionary_node *dictionary, int dictionary_size, char *value, int *key);
-void getKeyFromValueSorted(dictionary_node *dictionary, int dictionary_size, char *value, int *key);
+void getValueFromKey(sort_type type, dictionary_node *dictionary, int dictionary_size, uint32 *key, char *value);
+void getValueFromKeyUnsorted(dictionary_node *dictionary, int dictionary_size, uint32 *key, char *value);
+void getValueFromKeySorted(dictionary_node *dictionary, int dictionary_size, uint32 *key, char *value);
+void getKeyFromValue(sort_type type, dictionary_node *dictionary, int dictionary_size, char *value, uint32 *key);
+void getKeyFromValueUnsorted(dictionary_node *dictionary, int dictionary_size, char *value, uint32 *key);
+void getKeyFromValueSorted(dictionary_node *dictionary, int dictionary_size, char *value, uint32 *key);
 
 int copyString(char *dest, char *src, int destLen)
 {
@@ -64,7 +64,7 @@ int areEqual(char *str1, char *str2)
     return (str1[0] == '\0' && str2[0] == '\0') ? (0) : (str1[0] != str2[0]) ? (str1[0] - str2[0]) : areEqual(str1 + 1, str2 + 1);
 }
 
-void getValueFromKeyUnsorted(dictionary_node *dictionary, int dictionary_size, int *key, char *value)
+void getValueFromKeyUnsorted(dictionary_node *dictionary, int dictionary_size, uint32 *key, char *value)
 {
     int found = 0, left = 0, right = dictionary_size - 1;
     while (left <= right)
@@ -88,7 +88,7 @@ void getValueFromKeyUnsorted(dictionary_node *dictionary, int dictionary_size, i
         printf("Given key not found in the dictionary\n");
 }
 
-void getValueFromKeySorted(dictionary_node *dictionary, int dictionary_size, int *key, char *value)
+void getValueFromKeySorted(dictionary_node *dictionary, int dictionary_size, uint32 *key, char *value)
 {
     int found = 0, left = 0, middle = 0, right = dictionary_size - 1;
 
@@ -111,7 +111,7 @@ void getValueFromKeySorted(dictionary_node *dictionary, int dictionary_size, int
         printf("Given key not found in the dictionary\n");
 }
 
-void getKeyFromValueUnsorted(dictionary_node *dictionary, int dictionary_size, char *value, int *key)
+void getKeyFromValueUnsorted(dictionary_node *dictionary, int dictionary_size, char *value, uint32 *key)
 {
     int found = 0, left = 0, right = dictionary_size - 1;
     while (left <= right)
@@ -135,7 +135,7 @@ void getKeyFromValueUnsorted(dictionary_node *dictionary, int dictionary_size, c
         printf("Given value not found in the dictionary\n");
 }
 
-void getKeyFromValueSorted(dictionary_node *dictionary, int dictionary_size, char *value, int *key)
+void getKeyFromValueSorted(dictionary_node *dictionary, int dictionary_size, char *value, uint32 *key)
 {
     int found = 0, left = 0, middle = 0, right = dictionary_size - 1;
 
@@ -158,7 +158,7 @@ void getKeyFromValueSorted(dictionary_node *dictionary, int dictionary_size, cha
         printf("Given key not found in the dictionary\n");
 }
 
-void getValueFromKey(sort_type type, dictionary_node *dictionary, int dictionary_size, int *key, char *value)
+void getValueFromKey(sort_type type, dictionary_node *dictionary, int dictionary_size, uint32 *key, char *value)
 {
     if (dictionary == NULL)
     {
@@ -180,7 +180,7 @@ void getValueFromKey(sort_type type, dictionary_node *dictionary, int dictionary
     }
 }
 
-void getKeyFromValue(sort_type type, dictionary_node *dictionary, int dictionary_size, char *value, int *key)
+void getKeyFromValue(sort_type type, dictionary_node *dictionary, int dictionary_size, char *value, uint32 *key)
 {
     if (dictionary == NULL)
     {
@@ -213,13 +213,13 @@ int main(int argc, char const *argv[])
 
     char *value = malloc(MAX_VALUE_LEN * sizeof(char));
     MEMSET(value, '\0', MAX_VALUE_LEN);
-    int key = 3;
+    uint32 key = 3;
 
     getValueFromKey(DICT_SORTED_ON_KEY, dictionary, 5, &key, value);
     value = (STRLEN(value) == 0) ? "NULL" : value;
     printf("value is %s\n", value);
 
-    int key_out = -1;
+    uint32 key_out = -1;
     getKeyFromValue(DICT_UNSORTED, dictionary, 5, value, &key_out);
     printf("key is %d\n", key_out);
 
