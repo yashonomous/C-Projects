@@ -62,6 +62,20 @@ int _mapFunction(int item){
     return item * item;
 }
 
+void find(int *array, BOOL (*findFunction)(int item), int *resArray){
+    while(*array){
+        if(findFunction(*array)){
+            *resArray = *array;
+            break;
+        }
+        array++;
+    }
+}
+
+BOOL _findFunction(int item){
+    return (item > 7)? TRUE:FALSE;
+}
+
 int main(int argc, char const *argv[])
 {
     int *arr = malloc(10 * sizeof(int));
@@ -93,11 +107,21 @@ int main(int argc, char const *argv[])
     }
     printf("\n");
     
+    MEMSET(res, 0, 10);
     map(arr, _mapFunction, res);
     
-    int *tmp2 = res;
-    while(*tmp2){
-        printf("%d ", *tmp2++);
+    tmp1 = res;
+    while(*tmp1){
+        printf("%d ", *tmp1++);
+    }
+    printf("\n");
+
+    MEMSET(res, 0, 10);
+    find(arr, _findFunction, res);
+    
+    tmp1 = res;
+    while(*tmp1){
+        printf("%d ", *tmp1++);
     }
 
     return 0;
